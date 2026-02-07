@@ -183,7 +183,7 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-book"></i> BUKU KAS ASISTENSI MENGAJAR</h1>
-            <p class="subtitle">Pencatatan Keuangan Tim (5 Anggota) - Semester Ganjil 2024</p>
+            <p class="subtitle">Pencatatan Keuangan Tim (5 Anggota) - Semester Genap 2024</p>
         </header>
 
         <!-- Dashboard Ringkasan -->
@@ -213,6 +213,9 @@
             </div>
             <div class="tab" onclick="switchTab('tab2')">
                 <i class="fas fa-user-plus"></i> Input Iuran Anggota
+            </div>
+            <div class="tab" onclick="switchTab('tab4')">
+                <i class="fas fa-hand-holding-usd"></i> Input Pemasukan Lain
             </div>
             <div class="tab" onclick="switchTab('tab3')">
                 <i class="fas fa-file-invoice-dollar"></i> Input Pengeluaran
@@ -394,6 +397,46 @@
             </div>
         </div>
 
+        <!-- Tab 4: Input Pemasukan Lain -->
+        <div id="tab4" class="tab-content">
+            <div class="form-section">
+                <h2><i class="fas fa-hand-holding-usd"></i> INPUT PEMASUKAN LAIN</h2>
+                <p class="info-text">Catat pemasukan dana selain dari iuran anggota (Misal: Dana Kaget, Sumbangan, dll)
+                </p>
+
+                <form id="pemasukan-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tanggal-pemasukan"><i class="far fa-calendar-alt"></i> Tanggal Pemasukan</label>
+                            <input type="date" id="tanggal-pemasukan" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="jumlah-pemasukan"><i class="fas fa-money-bill-wave"></i> Jumlah Pemasukan
+                                (Rp)</label>
+                            <input type="number" id="jumlah-pemasukan" min="0" required placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="uraian-pemasukan"><i class="fas fa-file-alt"></i> Uraian Pemasukan</label>
+                        <input type="text" id="uraian-pemasukan"
+                            placeholder="Contoh: Sisa dana kegiatan sebelumnya, Sumbangan donatur" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sumber-dana"><i class="fas fa-user-tag"></i> Sumber Dana</label>
+                        <input type="text" id="sumber-dana" placeholder="Nama sumber dana / pemberi">
+                    </div>
+
+                    <button type="submit" class="btn-submit"
+                        style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                        <i class="fas fa-save"></i> SIMPAN PEMASUKAN
+                    </button>
+                </form>
+            </div>
+        </div>
+
         <!-- Tab 3: Input Pengeluaran -->
         <div id="tab3" class="tab-content">
             <div class="form-section">
@@ -502,8 +545,10 @@
                 document.querySelectorAll('.tab')[0].classList.add('active');
             } else if (tabId === 'tab2') {
                 document.querySelectorAll('.tab')[1].classList.add('active');
-            } else if (tabId === 'tab3') {
+            } else if (tabId === 'tab4') { // Pemasukan Lain
                 document.querySelectorAll('.tab')[2].classList.add('active');
+            } else if (tabId === 'tab3') {
+                document.querySelectorAll('.tab')[3].classList.add('active');
             }
         }
     </script>

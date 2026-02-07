@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Inisialisasi variabel state lokal (akan disinkronkan dengan Firebase)
     let transactions = [];
     let anggotaData = [
-        { id: 1, nama: 'Anggota 1', totalIuran: 0, status: 'belum', history: [] },
-        { id: 2, nama: 'Anggota 2', totalIuran: 0, status: 'belum', history: [] },
-        { id: 3, nama: 'Anggota 3', totalIuran: 0, status: 'belum', history: [] },
-        { id: 4, nama: 'Anggota 4', totalIuran: 0, status: 'belum', history: [] },
-        { id: 5, nama: 'Anggota 5', totalIuran: 0, status: 'belum', history: [] }
+        { id: 1, nama: 'Muhammad Zulkifli (230209501030)', totalIuran: 0, status: 'belum', history: [] },
+        { id: 2, nama: 'Faiz Ramadhan (230209552007)', totalIuran: 0, status: 'belum', history: [] },
+        { id: 3, nama: 'Reza Fathurrahman (230209501015)', totalIuran: 0, status: 'belum', history: [] },
+        { id: 4, nama: 'Muh. Dimas Januardi Nur (230209501007)', totalIuran: 0, status: 'belum', history: [] },
+        { id: 5, nama: 'Fardan Alsyah Muhram (230209502029)', totalIuran: 0, status: 'belum', history: [] }
     ];
 
     // Elemen DOM
@@ -240,10 +240,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (jumlah > 0) {
                         totalIuran += jumlah;
 
+                        // AUTO-LUNAS LOGIC
+                        let status = statusInput.value;
+                        if (jumlah >= 10000) {
+                            status = 'lunas';
+                            statusInput.value = 'lunas'; // Visual update
+                        }
+
                         // Update data anggota
                         const anggotaIndex = i - 1;
                         updatedAnggotaData[anggotaIndex].totalIuran += jumlah;
-                        updatedAnggotaData[anggotaIndex].status = statusInput.value;
+                        updatedAnggotaData[anggotaIndex].status = status;
 
                         // Tambahkan history
                         if (!updatedAnggotaData[anggotaIndex].history) updatedAnggotaData[anggotaIndex].history = [];
@@ -251,13 +258,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             tanggal,
                             minggu: mingguKe,
                             jumlah,
-                            status: statusInput.value
+                            status: status
                         });
 
                         anggotaHistory.push({
                             nama: `Anggota ${i}`,
                             jumlah: jumlah,
-                            status: statusInput.value
+                            status: status
                         });
                     }
                 }
@@ -299,6 +306,50 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.innerHTML = '<i class="fas fa-save"></i> SIMPAN IURAN ANGGOTA';
         }
     });
+
+    // Handle form Pemasukan Lain (NEW Feature)
+    const pemasukanForm = document.getElementById('pemasukan-form');
+    if (pemasukanForm) {
+        pemasukanForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MENYIMPAN...';
+
+            try {
+                const tanggal = document.getElementById('tanggal-pemasukan').value;
+                const jumlah = parseInt(document.getElementById('jumlah-pemasukan').value);
+                const uraian = document.getElementById('uraian-pemasukan').value;
+                const sumber = document.getElementById('sumber-dana').value;
+
+                const newTransaction = {
+                    tanggal,
+                    tipe: 'pemasukan',
+                    uraian: `${uraian}`,
+                    keterangan: sumber ? `Sumber: ${sumber}` : 'Pemasukan Lain',
+                    jumlah,
+                    nota: '',
+                    kategori: 'lainnya',
+                    createdAt: new Date().toISOString()
+                };
+
+                await addDoc(collection(db, "transactions"), newTransaction);
+
+                // Reset form
+                pemasukanForm.reset();
+                document.getElementById('tanggal-pemasukan').value = new Date().toISOString().split('T')[0];
+
+                alert(`Pemasukan berhasil disimpan! ${formatRupiah(jumlah)}`);
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alert("Terjadi kesalahan saat menyimpan data: " + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> SIMPAN PEMASUKAN';
+            }
+        });
+    }
 
     // Handle form pengeluaran
     pengeluaranForm.addEventListener('submit', function (e) {
