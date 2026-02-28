@@ -240,16 +240,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (jumlah > 0) {
                         totalIuran += jumlah;
 
-                        // AUTO-LUNAS LOGIC
-                        let status = statusInput.value;
-                        if (jumlah >= 10000) {
-                            status = 'lunas';
-                            statusInput.value = 'lunas'; // Visual update
-                        }
-
                         // Update data anggota
                         const anggotaIndex = i - 1;
                         updatedAnggotaData[anggotaIndex].totalIuran += jumlah;
+
+                        // AUTO-LUNAS LOGIC (berdasarkan total iuran)
+                        let status = statusInput ? statusInput.value : 'sebagian';
+                        if (updatedAnggotaData[anggotaIndex].totalIuran >= 10000) {
+                            status = 'lunas';
+                            if (statusInput) statusInput.value = 'lunas'; // Visual update
+                        }
+
                         updatedAnggotaData[anggotaIndex].status = status;
 
                         // Tambahkan history
